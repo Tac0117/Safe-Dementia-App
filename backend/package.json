@@ -1,0 +1,19 @@
+{
+  "name": "dementia-care-backend",
+  "version": "1.0.0",
+  "description": "Backend service for Safe Dementia - Caregiver & Patient Platform with Gemini AI Chat & a per-patient trained location predictor",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed-test-data.js",
+    "evaluate": "node scripts/evaluate-accuracy.js"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

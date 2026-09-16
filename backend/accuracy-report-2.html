@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Prediction accuracy - patient1</title>
+<style>
+  body { background:#020617; color:#e2e8f0; font-family:-apple-system,Segoe UI,Roboto,sans-serif; padding:40px; max-width:760px; margin:0 auto; }
+  h1 { font-size:20px; } p.sub { color:#94a3b8; font-size:13px; margin-top:-6px; }
+  .legend { display:flex; gap:20px; margin:16px 0; font-size:13px; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  table { width:100%; border-collapse:collapse; margin-top:24px; font-size:13px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #1e293b; }
+  th { color:#94a3b8; font-weight:600; }
+  .note { color:#64748b; font-size:12px; margin-top:14px; line-height:1.5; }
+</style></head>
+<body>
+  <h1>Prediction accuracy over time - patient1</h1>
+  <p class="sub">Walk-forward backtest across 1343 logged GPS pings. Chart shows top-1 accuracy - the real next place they went was the model's #1 prediction.</p>
+  <div class="legend">
+    <span><span class="dot" style="background:#2dd4bf"></span> Personalized (regression-fit) weights</span>
+    <span><span class="dot" style="background:#f59e0b"></span> Shared default weights</span>
+  </div>
+  
+    <svg viewBox="0 0 640 320" style="width:100%;max-width:640px;background:#0f172a;border-radius:12px">
+      <text x="42" y="284" font-size="11" text-anchor="end" fill="#94a3b8">0%</text><line x1="50" y1="280" x2="620" y2="280" stroke="#334155" stroke-width="1" /><text x="42" y="219" font-size="11" text-anchor="end" fill="#94a3b8">25%</text><line x1="50" y1="215" x2="620" y2="215" stroke="#334155" stroke-width="1" /><text x="42" y="154" font-size="11" text-anchor="end" fill="#94a3b8">50%</text><line x1="50" y1="150" x2="620" y2="150" stroke="#334155" stroke-width="1" /><text x="42" y="89" font-size="11" text-anchor="end" fill="#94a3b8">75%</text><line x1="50" y1="85" x2="620" y2="85" stroke="#334155" stroke-width="1" /><text x="42" y="24" font-size="11" text-anchor="end" fill="#94a3b8">100%</text><line x1="50" y1="20" x2="620" y2="20" stroke="#334155" stroke-width="1" />
+      <path d="M 50 238.63636363636365 L 192.5 195.8823529411765 L 335 171.66666666666666 L 477.5 205 L 620 225.83333333333331" fill="none" stroke="#f59e0b" stroke-width="2.5" />
+      <circle cx="50" cy="238.63636363636365" r="4" fill="#f59e0b" /><circle cx="192.5" cy="195.8823529411765" r="4" fill="#f59e0b" /><circle cx="335" cy="171.66666666666666" r="4" fill="#f59e0b" /><circle cx="477.5" cy="205" r="4" fill="#f59e0b" /><circle cx="620" cy="225.83333333333331" r="4" fill="#f59e0b" />
+      <path d="M 50 220.9090909090909 L 192.5 195.8823529411765 L 335 165.47619047619048 L 477.5 200 L 620 193.33333333333334" fill="none" stroke="#2dd4bf" stroke-width="2.5" />
+      <circle cx="50" cy="220.9090909090909" r="4" fill="#2dd4bf" /><circle cx="192.5" cy="195.8823529411765" r="4" fill="#2dd4bf" /><circle cx="335" cy="165.47619047619048" r="4" fill="#2dd4bf" /><circle cx="477.5" cy="200" r="4" fill="#2dd4bf" /><circle cx="620" cy="193.33333333333334" r="4" fill="#2dd4bf" />
+      <text x="50" y="298" font-size="11" text-anchor="middle" fill="#94a3b8">470</text><text x="192.5" y="298" font-size="11" text-anchor="middle" fill="#94a3b8">671</text><text x="335" y="298" font-size="11" text-anchor="middle" fill="#94a3b8">872</text><text x="477.5" y="298" font-size="11" text-anchor="middle" fill="#94a3b8">1074</text><text x="620" y="298" font-size="11" text-anchor="middle" fill="#94a3b8">1275</text>
+      <text x="320" y="315" font-size="11" text-anchor="middle" fill="#64748b">Training samples used at each checkpoint</text>
+    </svg>
+  <table>
+    <tr><th>Training samples</th><th>Held-out moves</th><th>Avg candidates</th><th>Personalized top-1</th><th>Default top-1</th><th>Personalized top-3</th><th>Default top-3</th></tr>
+    <tr><td>470</td><td>44</td><td>11.0</td><td>23%</td><td>16%</td><td>41%</td><td>34%</td></tr><tr><td>671</td><td>34</td><td>12.0</td><td>32%</td><td>32%</td><td>50%</td><td>53%</td></tr><tr><td>872</td><td>84</td><td>12.0</td><td>44%</td><td>42%</td><td>62%</td><td>61%</td></tr><tr><td>1074</td><td>52</td><td>12.0</td><td>31%</td><td>29%</td><td>54%</td><td>54%</td></tr><tr><td>1275</td><td>24</td><td>12.0</td><td>33%</td><td>21%</td><td>75%</td><td>75%</td></tr>
+  </table>
+    <p class="note">If "Avg candidates" is 3 or below, top-3 accuracy will look identical for both methods regardless of
+  the weights, since there simply aren't more than 3 places to rank - top-1 is the metric that actually shows
+  whether personalization is changing anything when a patient has a small number of regular places.</p>
+
+  <h2 style="font-size:15px;margin-top:32px">Fitted weights at each checkpoint</h2>
+  <table>
+    <tr><th>Training samples</th><th>Frequency</th><th>Transition</th><th>Distance</th><th>Time of day</th><th>Bias</th><th>Status</th></tr>
+    
+      <tr>
+        <td>470</td>
+        <td>29%</td>
+        <td>47%</td>
+        <td>9%</td>
+        <td>14%</td>
+        <td>-0.065</td>
+        <td>Personalized</td>
+      </tr>
+      <tr>
+        <td>671</td>
+        <td>29%</td>
+        <td>48%</td>
+        <td>10%</td>
+        <td>13%</td>
+        <td>-0.069</td>
+        <td>Personalized</td>
+      </tr>
+      <tr>
+        <td>872</td>
+        <td>29%</td>
+        <td>49%</td>
+        <td>11%</td>
+        <td>11%</td>
+        <td>-0.074</td>
+        <td>Personalized</td>
+      </tr>
+      <tr>
+        <td>1074</td>
+        <td>28%</td>
+        <td>48%</td>
+        <td>12%</td>
+        <td>12%</td>
+        <td>-0.079</td>
+        <td>Personalized</td>
+      </tr>
+      <tr>
+        <td>1275</td>
+        <td>28%</td>
+        <td>48%</td>
+        <td>12%</td>
+        <td>12%</td>
+        <td>-0.078</td>
+        <td>Personalized</td>
+      </tr>
+  </table>
+</body></html>
