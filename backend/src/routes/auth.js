@@ -112,4 +112,33 @@ router.get('/me', requireAuth, (req, res) => {
   res.json({ user: req.user, caregiver });
 });
 
+// Lets the logged-in user (caregiver or patient) update their own account -
+// name, email, and optionally their password. Distinct from the patient
+// PROFILE fields (age, condition, safe zone, etc.) in patient_profiles,
+// which go through /patients/:id instead and are edited by the caregiver on
+// the patient's behalf, not by the patient/caregiver about themselves.
+router.put('/me', requireAuth, (req, res) => {
+  const { name, email, newPassword, currentPassword } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Name is required' });
+  if (!isValidEmail(email)) return res.status(400).json({ error: 'Valid email required' });
+
+  const existing = db.prepare(`SELECT id FROM users WHERE email = ? AND id != ?`).get(email, req.user.id);
+  if (existing) return res.status(409).json({ error: 'That email is already used by another account' });
+
+  if (newPassword) {
+    if (newPassword.length < 8) return res.status(400).json({ error: 'New password must be at least 8 characters' });
+    const user = db.prepare(`SELECT password_hash, password_salt FROM users WHERE id = ?`).get(req.user.id);
+    if (!currentPassword || !verifyPassword(currentPassword, user.password_salt, user.password_hash)) {
+      return res.status(401).json({ error: 'Current password is incorrect' });
+    }
+    const { hash, salt } = hashPassword(newPassword);
+    db.prepare(`UPDATE users SET name = ?, email = ?, password_hash = ?, password_salt = ? WHERE id = ?`)
+      .run(name.trim(), email, hash, salt, req.user.id);
+  } else {
+    db.prepare(`UPDATE users SET name = ?, email = ? WHERE id = ?`).run(name.trim(), email, req.user.id);
+  }
+
+  res.json({ success: true, user: { id: req.user.id, email, name: name.trim(), role: req.user.role } });
+});
+
 export default router;
